@@ -1,23 +1,42 @@
 name: TinyProxy Compile
 
+concurrency:
+  group: ci-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
 on:
   push:
     branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
+  tags:
+    - "*"
 
 jobs:
   build:
     runs-on: ubuntu-24.04
 
-    steps:
-    - uses: actions/download-artifact@v4
-      with:
-        name: tinyproxy
-        repository: tinyproxy/tinyproxy
+  - name: Checkout repository
+    uses: actions/checkout@v4
+
+  - name: Setup Just
+    uses: extractions/setup-just@v2
+
+  - name: Setup Oras
+    uses: oras-project/setup-oras@v1
+    with:
+      version: 1.2.0
+
+  - name: Download
+    run: |
+      just download
+  - name: Uncompress
+    run: |
+      just uncompress
+
     - name: autogen
       run: ./autogen
+
     - name: configure
       run: ./configure LDFLAGS="-static" --enable-manpage_support=no
+
     - name: make
       run: make
