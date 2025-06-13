@@ -13,6 +13,7 @@ download:
  curl -L --remote-name https://github.com/tinyproxy/tinyproxy/releases/download/{{tinyproxy_version}}/tinyproxy-{{tinyproxy_version}}.tar.xz
 
 uncompress:
-  tar --strip-components=1 -xaf tinyproxy-{{tinyproxy_version}}.tar.xz
+  mkdir tinyproxy
+  tar -C tinyproxy -xaf tinyproxy-{{tinyproxy_version}}.tar.xz
 
 
