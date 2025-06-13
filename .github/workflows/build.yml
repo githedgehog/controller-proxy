@@ -29,15 +29,19 @@ jobs:
   - name: Download
     run: |
       just download
+
   - name: Uncompress
     run: |
       just uncompress
 
     - name: autogen
       run: ./autogen
+      working-directory: tinyproxy
 
     - name: configure
       run: ./configure LDFLAGS="-static" --enable-manpage_support=no
+      working-directory: tinyproxy
 
     - name: make
       run: make
+      working-directory: tinyproxy
