@@ -8,37 +8,38 @@ on:
   push:
     branches: [ "master" ]
     tags: [ "*" ]
- jobs:
-   build:
-     runs-on: ubuntu-24.04
-     steps:
-       - name: Checkout repository
-         uses: actions/checkout@v4
 
-       - name: Setup Just
-         uses: extractions/setup-just@v2
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-       - name: Setup Oras
-         uses: oras-project/setup-oras@v1
-         with:
-           version: 1.2.0
+      - name: Setup Just
+        uses: extractions/setup-just@v2
 
-       - name: Download
-         run: |
-           just download
+      - name: Setup Oras
+        uses: oras-project/setup-oras@v1
+        with:
+          version: 1.2.0
 
-       - name: Uncompress
-         run: |
-           just uncompress
+      - name: Download
+        run: |
+          just download
 
-       - name: autogen
-         run: ./autogen
-         working-directory: tinyproxy
+      - name: Uncompress
+        run: |
+          just uncompress
 
-       - name: configure
-         run: ./configure LDFLAGS="-static" --enable-manpage_support=no
-         working-directory: tinyproxy
+      - name: autogen
+        run: ./autogen
+        working-directory: tinyproxy
 
-       - name: make
-         run: make
-         working-directory: tinyproxy
+      - name: configure
+        run: ./configure LDFLAGS="-static" --enable-manpage_support=no
+        working-directory: tinyproxy
+
+      - name: make
+        run: make
+        working-directory: tinyproxy
