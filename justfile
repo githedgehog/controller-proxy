@@ -14,6 +14,6 @@ download:
 
 uncompress:
   mkdir tinyproxy
-  tar -C tinyproxy -xaf tinyproxy-{{tinyproxy_version}}.tar.xz
+  tar --strip-components=1 -C tinyproxy -xaf tinyproxy-{{tinyproxy_version}}.tar.xz
 
 
