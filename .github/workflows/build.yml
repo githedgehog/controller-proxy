@@ -33,7 +33,7 @@ jobs:
           just uncompress
 
       - name: autogen
-        run: ./autogen
+        run: ./autogen.sh
         working-directory: tinyproxy
 
       - name: configure
