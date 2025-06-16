@@ -44,6 +44,16 @@ jobs:
         run: make
         working-directory: tinyproxy
 
-      - name: push 
-        run: just push
+      - name: Login to ghcr.io
+        if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish on a tag push
+        if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
+        run: |
+          just --timestamp push
         working-directory: tinyproxy/src/
