@@ -43,3 +43,7 @@ jobs:
       - name: make
         run: make
         working-directory: tinyproxy
+
+      - name: push 
+        run: just push
+        working-directory: tinyproxy/src/
