@@ -16,4 +16,7 @@ uncompress:
   mkdir tinyproxy
   tar --strip-components=1 -C tinyproxy -xaf tinyproxy-{{tinyproxy_version}}.tar.xz
 
+push: && version
+  oras push ghcr.io/githedgehog/fabricator/control-proxy:{{version}} tinyproxy
+
 
