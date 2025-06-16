@@ -13,6 +13,12 @@ jobs:
   build:
     runs-on: ubuntu-24.04
     steps:
+      - name: Update Binaries 
+        run: sudo apt-get update
+
+      - name: Install Static Libs
+        run: sudo apt install -y build-essential
+
       - name: Checkout repository
         uses: actions/checkout@v4
 
