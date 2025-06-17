@@ -1,4 +1,4 @@
-name: TinyProxy Compile
+name: TinyProxy Image creation 
 
 concurrency:
   group: ci-${{ github.head_ref || github.run_id }}
@@ -7,11 +7,18 @@ concurrency:
 on:
   push:
     branches: [ "master" ]
-    tags: [ "*" ]
+    tags: [ 'v*.*.*']
+env:
+  # Use docker.io for Docker Hub if empty
+  REGISTRY: ghcr.io
+  # github.repository as <account>/<repo>
+  IMAGE_NAME: githedgehog/fabricator/controller-proxy
+
 
 jobs:
-  build:
-    runs-on: ubuntu-24.04
+  compile:
+    name: compile
+    runs-on: ubuntu-latest
     steps:
       - name: Update Binaries 
         run: sudo apt-get update
@@ -38,17 +45,8 @@ jobs:
         run: |
           just uncompress
 
-      - name: autogen
-        run: ./autogen.sh
-        working-directory: tinyproxy
-
-      - name: configure
-        run: ./configure LDFLAGS="-static" --enable-manpage_support=no
-        working-directory: tinyproxy
-
-      - name: make
-        run: make
-        working-directory: tinyproxy
+      - name: compile
+        run: just compile
 
       - name: Login to ghcr.io
         if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
@@ -57,9 +55,16 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
-      - name: Publish on a tag push
-        if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
-        run: |
-          just --timestamp push
-        working-directory: tinyproxy/src/
+      - name: Build and Push Container
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}

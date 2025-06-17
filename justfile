@@ -13,8 +13,14 @@ download:
  curl -L --remote-name https://github.com/tinyproxy/tinyproxy/releases/download/{{tinyproxy_version}}/tinyproxy-{{tinyproxy_version}}.tar.xz
 
 uncompress:
-  mkdir tinyproxy
-  tar --strip-components=1 -C tinyproxy -xaf tinyproxy-{{tinyproxy_version}}.tar.xz
+  mkdir workdir
+  tar --strip-components=1 -C workdir -xaf tinyproxy-{{tinyproxy_version}}.tar.xz
+
+[working-directory: 'workdir']
+compile:
+  ./autogen.sh
+  ./configure LDFLAGS="-static" --enable-manpage_support=no
+  make
 
 push: && version
   oras push ghcr.io/githedgehog/fabricator/controller-proxy:{{version}} tinyproxy
