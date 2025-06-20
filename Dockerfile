@@ -15,6 +15,6 @@
 
 FROM gcr.io/distroless/static:nonroot
 WORKDIR /
-COPY --chown=0:0 ./workdir/src/tinyproxy /bin/
+COPY --chown=65532:65532 ./workdir/src/tinyproxy /bin/
 USER 65532:65532
 ENTRYPOINT ["/bin/tinyproxy","-d","-c","/tinyproxy.conf"]
